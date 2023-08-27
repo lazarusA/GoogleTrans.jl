@@ -2,6 +2,7 @@ module GoogleTrans
 import HTTP
 import JSON
 export translate
+export translate_script
 #export batchtranslate
 
 function package_rpc(text::AbstractString, lang_src::String, lang_tgt::String)::String
@@ -41,4 +42,24 @@ translate(inputstrings::AbstractVector{S}, lang_tgt="auto", lang_src="auto") whe
 #    end
 #    return returnparts
 #end
+
+function translate_script(path; dest_lang="de", src_lang="en")
+    src = open(io->read(io, String), path)
+    src = split(src, "\n")
+    translated = []
+    for line in src
+        if line == ""
+            push!(translated, "")
+        elseif line[1] == '#'
+            translation = GoogleTrans.translate(line, dest_lang, src_lang)
+            # TODO translate without `# or ## or ###`.
+            push!(translated, translation)
+        else
+            push!(translated, line)
+        end
+    end
+    return join(translated, "\n")
 end
+
+end
+
