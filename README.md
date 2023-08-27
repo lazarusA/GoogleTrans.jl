@@ -11,7 +11,7 @@ Example :
 
 ```julia
 using GoogleTrans
-message = "Hello mundo"
+message = "Hello world"
 target_language = "ja" # Japanese`
 translation = GoogleTrans.translate(message, target_language)
 ```
