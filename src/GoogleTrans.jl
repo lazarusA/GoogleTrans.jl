@@ -18,17 +18,16 @@ function translate(text::AbstractString, lang_tgt="auto"::String, lang_src="auto
     freq = package_rpc(text, lang_src, lang_tgt)
     r = HTTP.request("POST", "https://translate.google.com/_/TranslateWebserverUi/data/batchexecute", headers, freq)
     resp = String(r.body)
+    #@show resp
     for line in split(resp, "\n")
         if occursin("MkEWBc", line)
-            response = line * "]"
-            parsed = JSON.parse(response)
-            #println(parsed)
-            goodparsed = JSON.parse(parsed[1][3])[2][1][1][6]
-            translated = ""
-            for sentencelist in goodparsed
-                translated = translated * " " * sentencelist[1] 
-            end
-            return translated[2:end]
+            parsed = JSON.parse(line)
+             goodparsed = JSON.parse(parsed[1][3])[2][1][1][6]
+             translated = ""
+             for sentencelist in goodparsed
+                 translated = translated * " " * sentencelist[1] 
+             end
+             return translated[2:end]
         end
     end
 end
